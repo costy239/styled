@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הורדת התמונה שלך | Golda Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;700;800&display=swap');
+        body { font-family: 'Assistant', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen flex flex-col items-center p-4">
+
+    <!-- Контейнер контента -->
+    <div class="max-w-2xl w-full bg-white shadow-2xl rounded-[3rem] overflow-hidden mt-4 mb-8">
+        
+        <!-- Шапка -->
+        <div class="bg-blue-600 p-6 text-white text-center">
+            <h1 class="text-3xl font-black mb-2">התמונה שלך מוכנה!</h1>
+            <p class="opacity-90">נשמח אם תמלאו משוב קצר לפני ההורדה</p>
+        </div>
+
+        <div class="p-6">
+            <!-- Секция с превью фото -->
+            <div id="preview-container" class="mb-8 flex flex-col items-center">
+                <div class="relative w-48 h-60 bg-gray-100 rounded-2xl overflow-hidden shadow-lg border-4 border-white mb-4">
+                    <img id="user-photo" src="" alt="Your Photo" class="w-full h-full object-cover">
+                </div>
+                <a id="download-btn" href="#" download="golda_photo.jpg" 
+                   class="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-2xl font-black text-xl shadow-lg transition-all transform hover:scale-105 flex items-center gap-2">
+                    ⬇️ הורד תמונה
+                </a>
+            </div>
+
+            <hr class="mb-8 border-blue-100">
+
+            <!-- Google Форма (Встроенная) -->
+            <div class="text-center mb-4">
+                <h2 class="text-xl font-bold text-blue-900 mb-4">נשמח לשמוע ממך:</h2>
+                <div class="rounded-2xl overflow-hidden border-2 border-blue-50 shadow-inner">
+                    <!-- ЗАМЕНИТЕ ЭТУ ССЫЛКУ НА ВАШУ GOOGLE ФОРМУ -->
+                    <iframe 
+                        id="google-form"
+                        src="https://docs.google.com/forms/d/e/1FAIpQLSfYourFormID/viewform?embedded=true" 
+                        width="100%" 
+                        height="600" 
+                        frameborder="0" 
+                        marginheight="0" 
+                        marginwidth="0">
+                        טוען...
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <div class="text-center text-blue-900/50 text-sm mb-8">
+        Golda Meir Photo Lab © 2024
+    </div>
+
+    <script>
+        // Получаем URL картинки из параметров запроса
+        const urlParams = new URLSearchParams(window.location.search);
+        const imageUrl = urlParams.get('img');
+        const userPhoto = document.getElementById('user-photo');
+        const downloadBtn = document.getElementById('download-btn');
+
+        if (imageUrl) {
+            // Устанавливаем фото
+            userPhoto.src = decodeURIComponent(imageUrl);
+            downloadBtn.href = decodeURIComponent(imageUrl);
+        } else {
+            // Если фото нет, показываем заглушку
+            userPhoto.src = 'https://via.placeholder.com/400x500?text=No+Photo';
+            downloadBtn.style.display = 'none';
+        }
+
+        // Логика автоматической прокрутки к кнопке скачивания после "отправки"
+        // (Google Forms перезагружает iframe при отправке)
+        let loadCount = 0;
+        document.getElementById('google-form').onload = function() {
+            loadCount++;
+            if (loadCount > 1) {
+                // Если форма перезагрузилась (отправлена), подсвечиваем кнопку
+                downloadBtn.classList.remove('bg-green-500');
+                downloadBtn.classList.add('bg-blue-600', 'animate-bounce');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+    </script>
+</body>
+</html>
